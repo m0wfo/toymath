@@ -22,7 +22,7 @@ public class ToyMathCompiler {
 
         private MethodVisitor main;
         private byte[] classBytes;
-        private int depth;
+        private int depth, maxDepth;
 
         @Override
         public void enterMain(ToymathParser.MainContext ctx) {
@@ -55,27 +55,28 @@ public class ToyMathCompiler {
         @Override public void enterAddValues(ToymathParser.AddValuesContext ctx) {
             main.visitLdcInsn(Integer.parseInt(ctx.INT(0).getText()));
             main.visitLdcInsn(Integer.parseInt(ctx.INT(1).getText()));
-            depth++;
+            main.visitInsn(Opcodes.IADD);
+            for (int i = depth; i > 0; i--) {
+                main.visitInsn(Opcodes.IADD);
+                depth--;
+            }
         }
 
         @Override
         public void enterAddExpr(ToymathParser.AddExprContext ctx) {
             main.visitLdcInsn(Integer.parseInt(ctx.INT().getText()));
             depth++;
+            maxDepth++;
         }
 
         @Override
         public void exitMain(ToymathParser.MainContext ctx) {
-            for (int i = 0; i < depth; i++) {
-                main.visitInsn(Opcodes.IADD);
-            }
-
             main.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "java/io/PrintStream",
                     "println",
                     "(I)V");
             main.visitInsn(Opcodes.RETURN);
-            main.visitMaxs(depth + 2, 1);
+            main.visitMaxs(maxDepth + 3, 1);
             main.visitEnd();
 
             cw.visitEnd();
@@ -85,7 +86,7 @@ public class ToyMathCompiler {
     }
 
     public static void main(String[] args) throws Exception {
-        String input = "main { 1024 + 123456 }";
+        String input = "main { 1 + 2 + 3 + 4 + 5 }";
         ANTLRInputStream inputStream = new ANTLRInputStream(input);
         ToymathLexer lexer = new ToymathLexer(inputStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);

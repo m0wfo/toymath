@@ -33,9 +33,6 @@
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
-                        <!--<configuration>-->
-                            <!--<visitor>true</visitor>-->
-                        <!--</configuration>-->
                     </execution>
                 </executions>
             </plugin>
