@@ -95,49 +95,6 @@ public class ToyMathCompiler {
 
         ParseTreeWalker.DEFAULT.walk(cg, parser.main());
 
-
-//        ClassWriter cw = new ClassWriter(0);
-//        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, "ToymathExample", null, "java/lang/Object", null);
-//
-//        cw.visitSource("ToymathExample.java", null);
-//
-//        // constructor
-//        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
-//        mv.visitVarInsn(Opcodes.ALOAD, 0);
-//        mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
-//                "java/lang/Object",
-//                "<init>",
-//                "()V");
-//        mv.visitInsn(Opcodes.RETURN);
-//        mv.visitMaxs(1, 1);
-//        mv.visitEnd();
-//
-//        // main method
-//        MethodVisitor main = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main",
-//                "([Ljava/lang/String;)V",
-//                null,
-//                null);
-//
-//        main.visitFieldInsn(Opcodes.GETSTATIC,
-//                "java/lang/System",
-//                "out",
-//                "Ljava/io/PrintStream;");
-////        main.visitLdcInsn("hello");
-//        main.visitLdcInsn(128);
-//        main.visitLdcInsn(128);
-//        main.visitInsn(Opcodes.IADD);
-//        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-//                "java/io/PrintStream",
-//                "println",
-//                "(I)V");
-//        main.visitInsn(Opcodes.RETURN);
-//        main.visitMaxs(8, 1);
-//        main.visitEnd();
-//
-//        cw.visitEnd();
-//
-//        byte[] bytes = cw.toByteArray();
-
         Files.write(Paths.get("ToymathExample.class"), cg.classBytes);
     }
 }
