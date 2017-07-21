@@ -29,4 +29,4 @@ That'll generate a `SpiffingApp.class` class file. Let's run it:
 
     java SpiffingApp
 
-That should print `2` on the command line.
+That should print `2` on the command line. Checkout the [examples](/examples) for more, um, examples.
