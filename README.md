@@ -12,5 +12,5 @@ You'll need Java 8+ and Maven.
     git clone https://github.com/m0wfo/toymath.git
     cd toymath
     mvn clean package
-    ./bin/toymathc FirstExample.tm
-    java FirstExample
+    ./bin/toymathc examples/FirstExample.tm
+    java examples/FirstExample
