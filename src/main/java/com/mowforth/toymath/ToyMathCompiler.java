@@ -3,9 +3,9 @@ package com.mowforth.toymath;
 import com.lexicalscope.jewel.cli.CliFactory;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
@@ -13,10 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Deque;
+import java.util.LinkedList;
 
 
 /**
- * Created by chris on 18/07/2017.
+ * Compiler for the toy math language.
  */
 public class ToyMathCompiler {
 
@@ -24,6 +26,7 @@ public class ToyMathCompiler {
 
         private final ClassWriter cw = new ClassWriter(0);
         private final Path sourcePath;
+        private final Deque<Label> labels;
 
         private MethodVisitor main;
         private byte[] classBytes;
@@ -31,6 +34,7 @@ public class ToyMathCompiler {
 
         CodeGen(Path sourcePath) {
             this.sourcePath = sourcePath;
+            this.labels = new LinkedList<>();
         }
 
         @Override
@@ -61,7 +65,8 @@ public class ToyMathCompiler {
                     "Ljava/io/PrintStream;");
         }
 
-        @Override public void enterAddValues(ToymathParser.AddValuesContext ctx) {
+        @Override
+        public void enterAddValues(ToymathParser.AddValuesContext ctx) {
             main.visitLdcInsn(Integer.parseInt(ctx.INT(0).getText()));
             main.visitLdcInsn(Integer.parseInt(ctx.INT(1).getText()));
             main.visitInsn(Opcodes.IADD);
@@ -85,13 +90,27 @@ public class ToyMathCompiler {
                     "println",
                     "(I)V");
             main.visitInsn(Opcodes.RETURN);
-            main.visitMaxs(maxDepth + 3, 1);
+            main.visitMaxs(maxDepth + 4, 1);
             main.visitEnd();
 
             cw.visitEnd();
 
             classBytes = cw.toByteArray();
         }
+
+        @Override
+        public void enterLoop(ToymathParser.LoopContext ctx) {
+            Label label = new Label();
+            labels.push(label);
+            main.visitLabel(label);
+        }
+
+        @Override
+        public void exitLoop(ToymathParser.LoopContext ctx) {
+            main.visitInsn(Opcodes.POP);
+            main.visitJumpInsn(Opcodes.GOTO, labels.pop());
+        }
+
     }
 
     public static void main(String[] args) throws Exception {
