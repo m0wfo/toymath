@@ -23,7 +23,7 @@ All toymath code is wrapped in a `main` method:
 
 Let's save our game-changing program as `SpiffingApp.tm` and compile it:
 
-    toymathc SpiffingApp.tm
+    ./bin/toymathc SpiffingApp.tm
 
 That'll generate a `SpiffingApp.class` class file. Let's run it:
 
