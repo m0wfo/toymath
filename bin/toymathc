@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+java -jar $(dirname $0)/../target/toy-math-1.0.0-SNAPSHOT.jar $1

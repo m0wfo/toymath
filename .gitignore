@@ -14,4 +14,3 @@ buildNumber.properties
 .idea
 *.iml
 *.class
-*.tm
